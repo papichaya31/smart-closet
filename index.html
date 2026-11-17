@@ -15,7 +15,7 @@
       --c-rose: #D5B4B4;
       --c-blush: #E4D0D0;
       --c-cream: #F5EBEB;
-      --c-ink: #3a2e2e;
+      --c-ink: #382b2b;
     }
 
     * {
@@ -25,15 +25,16 @@
 
     html {
       font-size: 18px;
+      scroll-behavior: smooth;
     }
 
     body {
       color: var(--c-ink);
       background:
-        radial-gradient(circle at 12% 18%, rgba(134, 112, 112, 0.22) 0%, transparent 45%),
-        radial-gradient(circle at 85% 15%, rgba(213, 180, 180, 0.48) 0%, transparent 45%),
-        radial-gradient(circle at 75% 82%, rgba(228, 208, 208, 0.6) 0%, transparent 48%),
-        radial-gradient(circle at 18% 85%, rgba(245, 235, 235, 0.95) 0%, transparent 50%),
+        radial-gradient(circle at 12% 15%, rgba(134, 112, 112, 0.20) 0%, transparent 45%),
+        radial-gradient(circle at 88% 12%, rgba(213, 180, 180, 0.45) 0%, transparent 45%),
+        radial-gradient(circle at 80% 85%, rgba(228, 208, 208, 0.65) 0%, transparent 48%),
+        radial-gradient(circle at 15% 88%, rgba(245, 235, 235, 0.95) 0%, transparent 50%),
         #F5EBEB;
       min-height: 100vh;
     }
@@ -41,10 +42,1372 @@
     .minimal-card {
       background: rgba(255, 255, 255, 0.88);
       backdrop-filter: blur(12px);
-      border: 1.5px solid rgba(134, 112, 112, 0.22);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1.5px solid rgba(134, 112, 112, 0.24);
       box-shadow: 0 10px 28px -10px rgba(134, 112, 112, 0.14);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     .minimal-card:hover {
-      box-shadow: 0 14
+      box-shadow: 0 14px 32px -10px rgba(134, 112, 112, 0.22);
+    }
+
+    .arch-frame {
+      border-radius: 999px 999px 18px 18px;
+      overflow: hidden;
+      border: 1.5px solid rgba(134, 112, 112, 0.25);
+      background: #F5EBEB;
+    }
+
+    .pill-btn {
+      transition: all 0.18s ease;
+    }
+    .pill-btn:active {
+      transform: scale(0.97);
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="pb-24 lg:pb-14">
+
+  <!-- Top Navigation (Desktop, iPad, Mobile Header) -->
+  <header class="sticky top-0 z-30 px-3 sm:px-4 pt-3">
+    <nav class="max-w-6xl mx-auto minimal-card rounded-full px-3.5 sm:px-5 py-2 flex items-center justify-between gap-2">
+      <!-- Brand -->
+      <button onclick="switchTab('today')" class="flex items-center gap-2.5 pl-1 shrink-0">
+        <span class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm text-white shadow-sm" style="background:#867070;">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+        </span>
+        <span class="font-bold tracking-wider text-lg sm:text-xl text-[#382b2b]">CHROMA</span>
+      </button>
+
+      <!-- Desktop & Tablet Center Tabs -->
+      <div class="hidden md:flex items-center gap-1 lg:gap-1.5 bg-[#F5EBEB] p-1 rounded-full border border-[#867070]/15">
+        <button id="tab-today" onclick="switchTab('today')" class="nav-tab px-4 py-1 rounded-full text-base font-bold bg-[#867070] text-white shadow-sm">
+          วันนี้
+        </button>
+        <button id="tab-stylist" onclick="switchTab('stylist')" class="nav-tab px-4 py-1 rounded-full text-base font-bold text-[#867070] hover:text-[#382b2b]">
+          AI Stylist
+        </button>
+        <button id="tab-wardrobe" onclick="switchTab('wardrobe')" class="nav-tab px-4 py-1 rounded-full text-base font-bold text-[#867070] hover:text-[#382b2b]">
+          ตู้เสื้อผ้า
+        </button>
+        <button id="tab-basket" onclick="switchTab('basket')" class="nav-tab px-4 py-1 rounded-full text-base font-bold text-[#867070] hover:text-[#382b2b] flex items-center gap-1.5">
+          <span>ตะกร้าใส่แล้ว</span>
+          <span id="nav-basket-badge" class="px-2 py-0 rounded-full text-xs font-bold bg-[#D5B4B4] text-[#382b2b]">0</span>
+        </button>
+      </div>
+
+      <!-- Right Status & Quick Actions -->
+      <div class="flex items-center gap-2 sm:gap-2.5 pr-1">
+        <div class="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full text-sm border border-[#867070]/15" style="background:#F5EBEB;">
+          <i data-lucide="cloud-sun" class="w-4 h-4 text-[#867070]"></i>
+          <div>
+            <span id="nav-temp" class="font-bold text-[#382b2b]">29°C</span>
+            <span id="nav-city" class="text-[#867070] text-xs ml-1">กรุงเทพฯ</span>
+          </div>
+        </div>
+        <button onclick="openScanModal()" title="เพิ่มเสื้อผ้าเข้าตู้" class="px-3 sm:px-3.5 py-1.5 rounded-full flex items-center gap-1.5 font-bold text-sm text-[#382b2b] border border-[#867070]/20 hover:opacity-90 transition" style="background:#D5B4B4;">
+          <i data-lucide="plus" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">เพิ่มชุด</span>
+        </button>
+        <button onclick="switchTab('profile')" title="โปรไฟล์และสถิติ" class="w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm text-white border border-[#867070]/20 hover:scale-105 transition" style="background:#867070;">
+          พช
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Mobile & iPad Bottom Navigation Bar -->
+  <nav class="md:hidden fixed bottom-0 inset-x-0 z-40 px-3 pb-3 pt-1.5 bg-gradient-to-t from-[#F5EBEB] via-[#F5EBEB]/95 to-transparent">
+    <div class="max-w-lg mx-auto minimal-card rounded-full px-2 py-1.5 grid grid-cols-5 gap-1 text-center">
+      <button id="m-tab-today" onclick="switchTab('today')" class="m-nav-tab flex flex-col items-center justify-center py-1 rounded-full bg-[#867070] text-white">
+        <i data-lucide="sun" class="w-4 h-4"></i>
+        <span class="text-xs font-bold mt-0.5">วันนี้</span>
+      </button>
+      <button id="m-tab-stylist" onclick="switchTab('stylist')" class="m-nav-tab flex flex-col items-center justify-center py-1 rounded-full text-[#867070]">
+        <i data-lucide="sparkles" class="w-4 h-4"></i>
+        <span class="text-xs font-bold mt-0.5">AI Stylist</span>
+      </button>
+      <button id="m-tab-wardrobe" onclick="switchTab('wardrobe')" class="m-nav-tab flex flex-col items-center justify-center py-1 rounded-full text-[#867070]">
+        <i data-lucide="shirt" class="w-4 h-4"></i>
+        <span class="text-xs font-bold mt-0.5">ตู้เสื้อผ้า</span>
+      </button>
+      <button id="m-tab-basket" onclick="switchTab('basket')" class="m-nav-tab relative flex flex-col items-center justify-center py-1 rounded-full text-[#867070]">
+        <i data-lucide="shopping-basket" class="w-4 h-4"></i>
+        <span class="text-xs font-bold mt-0.5">ตะกร้าใส่แล้ว</span>
+        <span id="m-basket-badge" class="absolute top-0.5 right-3 px-1.5 rounded-full text-[10px] font-bold bg-[#D5B4B4] text-[#382b2b]">0</span>
+      </button>
+      <button id="m-tab-profile" onclick="switchTab('profile')" class="m-nav-tab flex flex-col items-center justify-center py-1 rounded-full text-[#867070]">
+        <i data-lucide="user" class="w-4 h-4"></i>
+        <span class="text-xs font-bold mt-0.5">โปรไฟล์</span>
+      </button>
+    </div>
+  </nav>
+
+  <main class="max-w-6xl mx-auto px-3 sm:px-4 mt-5 sm:mt-6">
+
+    <!-- ==================== TAB 1: TODAY ==================== -->
+    <section id="view-today" class="space-y-5 sm:space-y-6">
+      <!-- Greeting Row -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <span id="today-date-badge" class="inline-block px-3.5 py-0.5 rounded-full text-sm font-bold border border-[#867070]/20 mb-1.5" style="background:#E4D0D0;">
+            กำลังโหลดวันที่...
+          </span>
+          <h1 class="text-3xl sm:text-4xl font-bold text-[#382b2b]">
+            สวัสดีตอนเช้า, <span class="underline decoration-[#D5B4B4] decoration-4">พั้นช์!</span>
+          </h1>
+          <p class="text-[#867070] text-base sm:text-lg mt-0.5">วันนี้มาจับคู่ชุดมินิมอลจากเสื้อผ้าที่ "พร้อมใช้" ในตู้กันไหม?</p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="switchTab('basket')" class="pill-btn px-4 py-2 rounded-2xl font-bold text-base flex items-center gap-2 border border-[#867070]/25 bg-white/90 text-[#382b2b]">
+            <i data-lucide="shopping-basket" class="w-4 h-4 text-[#867070]"></i>
+            ตะกร้าใส่แล้ว (<span id="today-basket-count">0</span>)
+          </button>
+          <button onclick="openScanModal()" class="pill-btn px-4 py-2 rounded-2xl font-bold text-base flex items-center gap-2 border border-[#867070]/20 text-[#382b2b] shadow-sm" style="background:#D5B4B4;">
+            <i data-lucide="camera" class="w-4 h-4"></i>
+            เพิ่มเสื้อผ้าใหม่
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick AI Prompt Bar -->
+      <div class="minimal-card rounded-3xl p-4 sm:p-5" style="background: rgba(228, 208, 208, 0.45);">
+        <label class="text-sm sm:text-base font-bold text-[#382b2b] flex items-center gap-1.5 mb-2">
+          <i data-lucide="wand-2" class="w-4 h-4 text-[#867070]"></i>
+          พิมพ์บอก AI ว่าวันนี้จะไปไหนหรืออยากแต่งสไตล์ไหน
+        </label>
+        <div class="flex flex-col sm:flex-row gap-2.5">
+          <input id="quick-ai-input" type="text" placeholder="เช่น ไปคาเฟ่ถ่ายรูปแสงเย็น ขอโทนละมุนพร้อมหมวกกับสร้อยมินิมอล..." class="flex-1 px-4 py-2 rounded-2xl bg-white/95 border border-[#867070]/25 text-base focus:outline-none focus:border-[#867070]" />
+          <button onclick="runQuickPrompt()" class="pill-btn px-5 py-2 rounded-2xl font-bold text-base text-white border border-[#867070]/20 flex items-center justify-center gap-2" style="background:#867070;">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            ให้ AI จัดลุคให้
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Bento Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <!-- Left Large Outfit Card -->
+        <div class="lg:col-span-8 minimal-card rounded-3xl p-4 sm:p-6 flex flex-col justify-between">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+              <span class="px-3 py-0.5 rounded-full text-xs sm:text-sm font-bold text-white" style="background:#867070;">
+                AI PICK FOR YOU
+              </span>
+              <span id="match-score" class="px-3 py-0.5 rounded-full text-xs sm:text-sm font-bold border border-[#867070]/20" style="background:#E4D0D0;">
+                98% พร้อมใช้
+              </span>
+            </div>
+            <button onclick="generateTodayLook()" class="px-3 py-1 rounded-full text-xs sm:text-sm font-bold border border-[#867070]/20 bg-[#F5EBEB] hover:bg-[#E4D0D0] flex items-center gap-1 transition">
+              <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+              สุ่มชุดใหม่
+            </button>
+          </div>
+
+          <div id="today-outfit-content" class="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
+            <!-- Outfit Visual Preview from Wardrobe -->
+            <div class="md:col-span-6 grid grid-cols-2 gap-2.5 p-3 rounded-2xl border border-[#867070]/20" style="background:#F5EBEB;">
+              <div class="space-y-1">
+                <img id="today-top-img" src="" alt="เสื้อ" class="w-full h-36 object-cover rounded-xl bg-white border border-[#867070]/15" />
+                <p id="today-top-name" class="text-sm font-bold truncate text-center text-[#382b2b]">-</p>
+              </div>
+              <div class="space-y-1">
+                <img id="today-bottom-img" src="" alt="ท่อนล่าง" class="w-full h-36 object-cover rounded-xl bg-white border border-[#867070]/15" />
+                <p id="today-bottom-name" class="text-sm font-bold truncate text-center text-[#382b2b]">-</p>
+              </div>
+              <div class="col-span-2 flex items-center gap-2.5 bg-white/90 p-2 rounded-xl border border-[#867070]/15">
+                <img id="today-shoe-img" src="" alt="รองเท้า" class="w-11 h-11 object-cover rounded-lg" />
+                <div class="min-w-0 flex-1">
+                  <span class="text-xs text-[#867070] block">รองเท้าที่แมตช์ (พร้อมใช้)</span>
+                  <p id="today-shoe-name" class="text-sm font-bold truncate text-[#382b2b]">-</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Outfit Description & Accessories -->
+            <div class="md:col-span-6 space-y-3.5">
+              <div>
+                <span id="today-occasion-tag" class="inline-block px-2.5 py-0.5 rounded-lg text-xs sm:text-sm font-bold bg-[#E4D0D0]/60 text-[#382b2b] mb-1">คาเฟ่ / ชิลล์</span>
+                <h2 id="today-look-title" class="text-2xl sm:text-3xl font-bold text-[#382b2b]">Rose Taupe Minimal</h2>
+                <p id="today-look-desc" class="text-sm sm:text-base text-[#867070] mt-1 leading-relaxed">
+                  จับคู่โทนสีละมุนจากเสื้อผ้าที่พร้อมใช้ในตู้ เหมาะกับอุณหภูมิวันนี้
+                </p>
+              </div>
+
+              <!-- Accessories Match Box -->
+              <div class="p-3 rounded-2xl border border-[#867070]/20 space-y-2" style="background: rgba(213, 180, 180, 0.25);">
+                <div class="text-sm font-bold text-[#382b2b] flex items-center gap-1.5">
+                  <i data-lucide="gem" class="w-3.5 h-3.5 text-[#867070]"></i>
+                  Accessories ที่แนะนำให้แมตช์คู่กัน
+                </div>
+                <div id="today-accessories-list" class="flex flex-wrap gap-1.5">
+                  <!-- Rendered dynamically -->
+                </div>
+              </div>
+
+              <!-- Action Button: สวมใส่ (Moves entire outfit to ตะกร้าใส่แล้ว) -->
+              <div class="pt-1 flex flex-col sm:flex-row gap-2">
+                <button onclick="wearTodayLook()" class="pill-btn flex-1 py-2.5 px-4 rounded-2xl font-bold text-base sm:text-lg text-white border border-[#867070]/20 shadow-sm flex items-center justify-center gap-2 hover:opacity-95" style="background:#867070;">
+                  <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                  สวมใส่ (ย้ายชุดนี้ลงตะกร้าใส่แล้ว)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Lucky Color & Real-time Weather -->
+        <div class="lg:col-span-4 flex flex-col gap-5">
+          <!-- Lucky Color Card -->
+          <div id="lucky-color-card" class="minimal-card rounded-3xl p-5 flex-1 flex flex-col justify-between" style="background: linear-gradient(135deg, #E4D0D0 0%, #F5EBEB 100%);">
+            <div class="flex items-center justify-between">
+              <span class="px-3 py-0.5 rounded-full text-xs font-bold bg-white/85 text-[#382b2b] border border-[#867070]/15">
+                DAILY LUCKY COLOR
+              </span>
+              <span id="lucky-day-name" class="text-sm font-bold text-[#867070]">วันอังคาร</span>
+            </div>
+            <div class="my-3 flex items-center gap-3.5">
+              <div id="lucky-swatch" class="w-14 h-14 rounded-2xl border-2 border-white shadow-sm shrink-0" style="background:#D5B4B4;"></div>
+              <div>
+                <h3 id="lucky-color-title" class="text-xl sm:text-2xl font-bold text-[#382b2b]">สีชมพูตุ่น / ครีมอ่อน</h3>
+                <p id="lucky-color-sub" class="text-sm text-[#867070] mt-0.5">เสริมเสน่ห์ เมตตามหานิยม และความราบรื่นตลอดวัน</p>
+              </div>
+            </div>
+            <button onclick="matchLuckyColorLook()" class="w-full py-1.5 rounded-xl bg-white/90 hover:bg-white text-sm font-bold text-[#382b2b] border border-[#867070]/15 transition">
+              ให้ AI จัดชุดตามสีมงคลวันนี้ →
+            </button>
+          </div>
+
+          <!-- Real-time Weather Card -->
+          <div class="minimal-card rounded-3xl p-5 flex-1 flex flex-col justify-between text-white" style="background: linear-gradient(135deg, #867070 0%, #D5B4B4 100%);">
+            <div class="flex items-start justify-between">
+              <div>
+                <span class="text-xs font-bold uppercase tracking-wider opacity-85">สภาพอากาศเรียลไทม์</span>
+                <div class="flex items-baseline gap-2 mt-1">
+                  <span id="weather-temp" class="text-4xl font-bold">29°C</span>
+                  <span id="weather-desc" class="text-base font-bold">ท้องฟ้าโปร่ง</span>
+                </div>
+                <p id="weather-location" class="text-sm opacity-90 mt-0.5 flex items-center gap-1">
+                  <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> กรุงเทพมหานคร
+                </p>
+              </div>
+              <div class="w-12 h-12 rounded-2xl bg-white/25 flex items-center justify-center">
+                <i id="weather-icon" data-lucide="sun" class="w-6 h-6 text-white"></i>
+              </div>
+            </div>
+            <p id="weather-tip" class="mt-3 text-sm bg-white/90 p-2.5 rounded-xl text-[#382b2b] font-medium">
+              Style Tip: อากาศอบอุ่น แนะนำเสื้อผ้าฝ้ายหรือลินินโทนสว่าง คู่กับหมวกและเครื่องประดับมินิมอล
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Occasion Quick Shortcuts -->
+      <div>
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-lg sm:text-xl font-bold text-[#382b2b]">วันนี้จะไปไหน?</h3>
+          <button onclick="switchTab('stylist')" class="text-sm sm:text-base font-bold text-[#867070] hover:text-[#382b2b]">เปิด AI Stylist เต็มรูปแบบ →</button>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <button onclick="quickOccasion('ไปเรียน / ทำงาน')" class="minimal-card p-3.5 rounded-2xl text-left flex items-center gap-3 hover:bg-[#E4D0D0]/40">
+            <span class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-white" style="background:#867070;"><i data-lucide="briefcase" class="w-4 h-4"></i></span>
+            <div>
+              <p class="font-bold text-base">ไปเรียน / ทำงาน</p>
+              <p class="text-xs text-[#867070]">Smart Casual</p>
+            </div>
+          </button>
+          <button onclick="quickOccasion('คาเฟ่')" class="minimal-card p-3.5 rounded-2xl text-left flex items-center gap-3 hover:bg-[#E4D0D0]/40">
+            <span class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-[#382b2b]" style="background:#D5B4B4;"><i data-lucide="coffee" class="w-4 h-4"></i></span>
+            <div>
+              <p class="font-bold text-base">คาเฟ่</p>
+              <p class="text-xs text-[#867070]">Comfy & Cute</p>
+            </div>
+          </button>
+          <button onclick="quickOccasion('ออกเดต')" class="minimal-card p-3.5 rounded-2xl text-left flex items-center gap-3 hover:bg-[#E4D0D0]/40">
+            <span class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-[#382b2b]" style="background:#E4D0D0;"><i data-lucide="heart" class="w-4 h-4"></i></span>
+            <div>
+              <p class="font-bold text-base">ออกเดต</p>
+              <p class="text-xs text-[#867070]">Soft & Charming</p>
+            </div>
+          </button>
+          <button onclick="quickOccasion('งานปาร์ตี้ / เที่ยว')" class="minimal-card p-3.5 rounded-2xl text-left flex items-center gap-3 hover:bg-[#E4D0D0]/40">
+            <span class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 text-[#382b2b] border border-[#867070]/20" style="background:#F5EBEB;"><i data-lucide="sparkles" class="w-4 h-4"></i></span>
+            <div>
+              <p class="font-bold text-base">เที่ยว / ปาร์ตี้</p>
+              <p class="text-xs text-[#867070]">Chic & Fun</p>
+            </div>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 2: AI STYLIST ==================== -->
+    <section id="view-stylist" class="hidden max-w-3xl mx-auto space-y-6">
+      <div class="text-center sm:text-left">
+        <span class="inline-block px-3 py-0.5 rounded-full text-xs sm:text-sm font-bold text-white mb-2" style="background:#867070;">
+          AI PERSONAL STYLIST
+        </span>
+        <h2 class="text-3xl font-bold text-[#382b2b]">วันนี้อยากแต่งตัวไปไหน?</h2>
+        <p class="text-base text-[#867070] mt-1">AI จะคัดเลือกเฉพาะเสื้อผ้าและเครื่องประดับที่มีสถานะ <span class="font-bold text-[#382b2b]">"พร้อมใช้"</span> ในตู้มาจับคู่ให้</p>
+      </div>
+
+      <div class="minimal-card rounded-3xl p-5 sm:p-7 space-y-6">
+        <!-- Step 01 -->
+        <div>
+          <div class="flex items-center gap-2.5 mb-3">
+            <span class="w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold text-white" style="background:#867070;">01</span>
+            <h3 class="font-bold text-lg sm:text-xl">เลือกโอกาส</h3>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="occasion-options">
+            <button type="button" onclick="selectStylistOption('occasion', 'ไปเรียน / ทำงาน', this)" class="stylist-occ-btn p-3 rounded-2xl border border-[#867070]/25 text-center font-bold text-base bg-[#D5B4B4] text-[#382b2b]">
+              ไปเรียน / ทำงาน
+            </button>
+            <button type="button" onclick="selectStylistOption('occasion', 'คาเฟ่', this)" class="stylist-occ-btn p-3 rounded-2xl border border-[#867070]/20 text-center font-bold text-base bg-white hover:bg-[#F5EBEB]">
+              คาเฟ่
+            </button>
+            <button type="button" onclick="selectStylistOption('occasion', 'ออกเดต', this)" class="stylist-occ-btn p-3 rounded-2xl border border-[#867070]/20 text-center font-bold text-base bg-white hover:bg-[#F5EBEB]">
+              ออกเดต
+            </button>
+            <button type="button" onclick="selectStylistOption('occasion', 'งานปาร์ตี้ / เที่ยว', this)" class="stylist-occ-btn p-3 rounded-2xl border border-[#867070]/20 text-center font-bold text-base bg-white hover:bg-[#F5EBEB]">
+              เที่ยว / ปาร์ตี้
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 02 -->
+        <div>
+          <div class="flex items-center gap-2.5 mb-3">
+            <span class="w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold text-[#382b2b]" style="background:#D5B4B4;">02</span>
+            <h3 class="font-bold text-lg sm:text-xl">กำหนดสไตล์</h3>
+          </div>
+          <div class="flex flex-wrap gap-2" id="style-options">
+            <button type="button" onclick="selectStylistOption('style', 'มินิมอลคลีนๆ', this)" class="stylist-sty-btn px-4 py-1.5 rounded-full border border-[#867070]/25 text-base font-bold bg-[#E4D0D0] text-[#382b2b]">มินิมอลคลีนๆ</button>
+            <button type="button" onclick="selectStylistOption('style', 'ละมุนเอิร์ธโทน', this)" class="stylist-sty-btn px-4 py-1.5 rounded-full border border-[#867070]/20 text-base font-bold bg-white">ละมุนเอิร์ธโทน</button>
+            <button type="button" onclick="selectStylistOption('style', 'มั่นใจเรียบหรู', this)" class="stylist-sty-btn px-4 py-1.5 rounded-full border border-[#867070]/20 text-base font-bold bg-white">มั่นใจเรียบหรู</button>
+            <button type="button" onclick="selectStylistOption('style', 'สบายๆ คล่องตัว', this)" class="stylist-sty-btn px-4 py-1.5 rounded-full border border-[#867070]/20 text-base font-bold bg-white">สบายๆ คล่องตัว</button>
+          </div>
+        </div>
+
+        <!-- Step 03: Free Text Prompt -->
+        <div>
+          <div class="flex items-center gap-2.5 mb-2">
+            <span class="w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold text-[#382b2b]" style="background:#E4D0D0;">03</span>
+            <h3 class="font-bold text-lg sm:text-xl">รายละเอียดเพิ่มเติมให้ AI วิเคราะห์</h3>
+          </div>
+          <textarea id="stylist-custom-prompt" rows="2" placeholder="พิมพ์บอกรายละเอียด เช่น อยากได้ลุคที่ใส่หมวกบักเก็ตกับสร้อยคอ เดินสะดวกไม่ร้อน..." class="w-full p-3.5 rounded-2xl bg-white border border-[#867070]/25 text-base focus:outline-none focus:border-[#867070]"></textarea>
+          <div class="flex flex-wrap gap-1.5 mt-2">
+            <button type="button" onclick="fillPromptPreset('ไปคาเฟ่ถ่ายรูปแสงเย็น ขอโทนละมุนพร้อมหมวกและต่างหู')" class="text-sm px-3 py-1 rounded-full bg-[#F5EBEB] hover:bg-[#E4D0D0] text-[#382b2b] transition">+ คาเฟ่ถ่ายรูปแสงเย็น</button>
+            <button type="button" onclick="fillPromptPreset('ไปเรียนพิเศษ ขอชุดคล่องตัว แมตช์กับกำไลเรียบๆ')" class="text-sm px-3 py-1 rounded-full bg-[#F5EBEB] hover:bg-[#E4D0D0] text-[#382b2b] transition">+ ไปเรียนพิเศษคล่องตัว</button>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button onclick="generateStylistResult()" class="pill-btn w-full py-3 rounded-2xl font-bold text-lg text-white border border-[#867070]/20 shadow-sm flex items-center justify-center gap-2" style="background: linear-gradient(90deg, #867070 0%, #a68b8b 100%);">
+          <i data-lucide="sparkles" class="w-5 h-5"></i>
+          ให้ AI สร้างลุคพร้อมแมตช์ Accessories
+        </button>
+      </div>
+
+      <!-- Stylist Result Output -->
+      <div id="stylist-result-box" class="hidden minimal-card rounded-3xl p-5 sm:p-6 space-y-4 border-2 border-[#867070]">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <span class="px-3 py-0.5 rounded-full text-sm font-bold text-white" style="background:#867070;">ผลลัพธ์การวิเคราะห์จาก AI</span>
+          <span id="stylist-res-tag" class="text-sm font-bold text-[#867070]"></span>
+        </div>
+        <p id="stylist-ai-analysis" class="text-base sm:text-lg text-[#382b2b] leading-relaxed bg-[#F5EBEB] p-3.5 rounded-2xl border border-[#867070]/15"></p>
+        <div id="stylist-items-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+          <!-- Matched items & accessories rendered here -->
+        </div>
+        <div class="pt-2 flex flex-col sm:flex-row justify-end gap-2.5">
+          <button onclick="applyStylistToToday()" class="pill-btn px-4 py-2.5 rounded-2xl font-bold text-base border border-[#867070]/25 bg-white hover:bg-[#F5EBEB] text-[#382b2b]">
+            ตั้งเป็นลุคแนะนำหน้าแรก
+          </button>
+          <button onclick="wearStylistLook()" class="pill-btn px-6 py-2.5 rounded-2xl font-bold text-base text-white shadow-sm flex items-center justify-center gap-2 hover:opacity-95" style="background:#867070;">
+            <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+            สวมใส่ (ย้ายชุดนี้ลงตะกร้าใส่แล้ว)
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: WARDROBE (พร้อมใช้) ==================== -->
+    <section id="view-wardrobe" class="hidden space-y-5">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <span class="inline-block px-3 py-0.5 rounded-full text-xs sm:text-sm font-bold text-white mb-1.5" style="background:#867070;">
+            MY WARDROBE • พร้อมใช้
+          </span>
+          <h2 class="text-3xl font-bold text-[#382b2b]">ตู้เสื้อผ้าและเครื่องประดับของฉัน</h2>
+          <p id="wardrobe-summary-text" class="text-base text-[#867070] mt-0.5">ทั้งหมด 0 ชิ้น</p>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          <button onclick="switchTab('basket')" class="pill-btn px-4 py-2 rounded-2xl font-bold text-base border border-[#867070]/25 bg-white text-[#382b2b] flex items-center gap-2">
+            <i data-lucide="shopping-basket" class="w-4 h-4 text-[#867070]"></i>
+            ดูตะกร้าใส่แล้ว (<span id="wardrobe-basket-count">0</span>)
+          </button>
+          <button onclick="openScanModal()" class="pill-btn px-4 py-2 rounded-2xl font-bold text-base border border-[#867070]/20 text-[#382b2b] flex items-center gap-2 shadow-sm" style="background:#D5B4B4;">
+            <i data-lucide="image-plus" class="w-4 h-4"></i>
+            เพิ่มรูปจากอัลบั้ม
+          </button>
+        </div>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1" id="category-filters">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Wardrobe Arch Cards Container -->
+      <div class="minimal-card rounded-3xl p-4 sm:p-6" style="background: rgba(228, 208, 208, 0.4);">
+        <div id="wardrobe-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5 sm:gap-5">
+          <!-- Cards rendered dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 4: WORN BASKET (ตะกร้าใส่แล้ว) ==================== -->
+    <section id="view-basket" class="hidden space-y-5">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <span class="inline-block px-3 py-0.5 rounded-full text-xs sm:text-sm font-bold text-[#382b2b] mb-1.5" style="background:#D5B4B4;">
+            WORN BASKET • ตะกร้าใส่แล้ว
+          </span>
+          <h2 class="text-3xl font-bold text-[#382b2b]">ตะกร้าเสื้อผ้าที่สวมใส่แล้ว</h2>
+          <p id="basket-summary-text" class="text-base text-[#867070] mt-0.5">เมื่อซักเสร็จแล้ว สามารถกดปุ่ม "ซักแล้ว" เพื่อย้ายกลับเข้าตู้เสื้อผ้าพร้อมใช้</p>
+        </div>
+
+        <button id="wash-all-btn" onclick="washAllItems()" class="pill-btn self-start sm:self-center px-5 py-2.5 rounded-2xl font-bold text-base text-white flex items-center gap-2 shadow-sm" style="background:#867070;">
+          <i data-lucide="sparkles" class="w-4 h-4"></i>
+          ซักแล้วทั้งหมด (ย้ายกลับเข้าตู้)
+        </button>
+      </div>
+
+      <div class="minimal-card rounded-3xl p-4 sm:p-6" style="background: rgba(255, 255, 255, 0.85);">
+        <div id="basket-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3.5 sm:gap-5">
+          <!-- Worn items rendered dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 5: PROFILE ==================== -->
+    <section id="view-profile" class="hidden max-w-lg mx-auto">
+      <div class="minimal-card rounded-3xl p-6 sm:p-8 text-center space-y-5">
+        <div class="w-20 h-20 rounded-full mx-auto flex items-center justify-center text-2xl font-bold text-white border-2 border-[#D5B4B4] shadow-sm" style="background:#867070;">
+          พช
+        </div>
+        <div>
+          <h2 id="profile-name" class="text-2xl font-bold text-[#382b2b]">พั้นช์ (Punch)</h2>
+          <p id="profile-email" class="text-sm sm:text-base text-[#867070]">โหมดใช้งานออฟไลน์ (บันทึกข้อมูลในเครื่องอัตโนมัติ)</p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3 p-3.5 rounded-2xl border border-[#867070]/15" style="background:#F5EBEB;">
+          <div>
+            <p id="stat-ready-items" class="text-2xl font-bold text-[#382b2b]">0</p>
+            <p class="text-sm text-[#867070]">พร้อมใช้ในตู้</p>
+          </div>
+          <div>
+            <p id="stat-basket-items" class="text-2xl font-bold text-[#382b2b]">0</p>
+            <p class="text-sm text-[#867070]">ในตะกร้าใส่แล้ว</p>
+          </div>
+          <div>
+            <p id="stat-worn-count" class="text-2xl font-bold text-[#382b2b]">0</p>
+            <p class="text-sm text-[#867070]">ครั้งที่สวมใส่</p>
+          </div>
+        </div>
+
+        <!-- Email Sync / Account Box -->
+        <div class="text-left p-4 rounded-2xl bg-white/90 border border-[#867070]/15 space-y-3">
+          <h3 class="text-base font-bold text-[#382b2b] flex items-center gap-1.5">
+            <i data-lucide="mail" class="w-4 h-4 text-[#867070]"></i>
+            เชื่อมต่ออีเมลเพื่อสำรองข้อมูลตู้เสื้อผ้า
+          </h3>
+          <div class="flex gap-2">
+            <input id="sync-email-input" type="email" placeholder="กรอกอีเมลของคุณ เช่น punch@email.com" class="flex-1 px-3.5 py-1.5 rounded-xl border border-[#867070]/25 text-base focus:outline-none" />
+            <button onclick="saveUserEmail()" class="px-4 py-1.5 rounded-xl font-bold text-base text-white" style="background:#867070;">
+              เชื่อมต่อ
+            </button>
+          </div>
+        </div>
+
+        <div class="pt-2 flex flex-col gap-2">
+          <button onclick="resetDemoWardrobe()" class="w-full py-2 rounded-2xl text-sm font-bold text-[#867070] hover:text-[#382b2b] border border-[#867070]/20 bg-white/70">
+            รีเซ็ตข้อมูลตัวอย่างเริ่มต้น
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== MODAL: ADD ITEM / PHOTO UPLOAD ==================== -->
+  <div id="scan-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-[#382b2b]/40 backdrop-blur-sm p-4">
+    <div class="minimal-card bg-white rounded-3xl max-w-md w-full p-5 sm:p-6 space-y-4 relative max-h-[90vh] overflow-y-auto">
+      <button onclick="closeScanModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-[#F5EBEB] hover:bg-[#E4D0D0] flex items-center justify-center">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+
+      <div class="text-center space-y-1">
+        <span class="inline-block px-3 py-0.5 rounded-full text-xs font-bold text-white" style="background:#867070;">AI CLOSET SCAN</span>
+        <h3 class="text-2xl font-bold text-[#382b2b]">เพิ่มเสื้อผ้า / เครื่องประดับเข้าตู้</h3>
+        <p class="text-sm text-[#867070]">เลือกรูปจากอัลบั้มหรือถ่ายรูป ระบบจะเพิ่มเข้าตู้ในสถานะ "พร้อมใช้"</p>
+      </div>
+
+      <!-- Image Picker Area -->
+      <div class="border-2 border-dashed border-[#D5B4B4] rounded-2xl p-4 text-center space-y-3" style="background: rgba(245, 235, 235, 0.7);">
+        <img id="upload-preview-img" src="" alt="Preview" class="hidden w-36 h-36 object-cover rounded-2xl mx-auto border border-[#867070]/20 shadow-sm" />
+        <div id="upload-placeholder" class="py-3">
+          <i data-lucide="shirt" class="w-10 h-10 mx-auto text-[#867070] mb-1"></i>
+          <p class="text-sm text-[#867070]">ยังไม่ได้เลือกรูปภาพ</p>
+        </div>
+
+        <div class="flex gap-2 justify-center">
+          <label class="pill-btn cursor-pointer px-4 py-1.5 rounded-xl text-sm sm:text-base font-bold text-[#382b2b] border border-[#867070]/20 flex items-center gap-1.5" style="background:#D5B4B4;">
+            <i data-lucide="images" class="w-4 h-4"></i>
+            เลือกจากอัลบั้มรูป
+            <input id="album-file-input" type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event)" />
+          </label>
+          <label class="pill-btn cursor-pointer px-4 py-1.5 rounded-xl text-sm sm:text-base font-bold border border-[#867070]/20 bg-white flex items-center gap-1.5">
+            <i data-lucide="camera" class="w-4 h-4"></i>
+            ถ่ายรูป
+            <input id="camera-file-input" type="file" accept="image/*" capture="environment" class="hidden" onchange="handleImageUpload(event)" />
+          </label>
+        </div>
+      </div>
+
+      <!-- Item Form -->
+      <div class="space-y-3">
+        <div>
+          <label class="text-sm font-bold text-[#382b2b] block mb-1">ชื่อไอเทม</label>
+          <input id="new-item-name" type="text" placeholder="เช่น เสื้อเชิ้ตลินินสีครีม, หมวกบักเก็ต..." class="w-full px-3.5 py-1.5 rounded-xl border border-[#867070]/25 text-base focus:outline-none focus:border-[#867070]" />
+        </div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="text-sm font-bold text-[#382b2b] block mb-1">หมวดหมู่</label>
+            <select id="new-item-category" class="w-full px-3 py-1.5 rounded-xl border border-[#867070]/25 text-base bg-white focus:outline-none">
+              <option value="เสื้อ">เสื้อ</option>
+              <option value="กางเกง">กางเกง</option>
+              <option value="กระโปรง/เดรส">กระโปรง/เดรส</option>
+              <option value="เสื้อคลุม">เสื้อคลุม</option>
+              <option value="รองเท้า">รองเท้า</option>
+              <option value="หมวก">หมวก</option>
+              <option value="สร้อยคอ">สร้อยคอ</option>
+              <option value="ต่างหู">ต่างหู</option>
+              <option value="กำไล">กำไล</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-sm font-bold text-[#382b2b] block mb-1">โทนสีหลัก</label>
+            <input id="new-item-color" type="text" placeholder="เช่น ชมพูตุ่น, ครีม, ขาว" class="w-full px-3 py-1.5 rounded-xl border border-[#867070]/25 text-base focus:outline-none" />
+          </div>
+        </div>
+      </div>
+
+      <button onclick="saveNewWardrobeItem()" class="pill-btn w-full py-2.5 rounded-2xl font-bold text-lg text-white border border-[#867070]/20" style="background:#867070;">
+        บันทึกเข้าตู้เสื้อผ้า (พร้อมใช้)
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-50 hidden px-5 py-2 rounded-full bg-[#382b2b] text-white text-base font-bold shadow-lg whitespace-nowrap">
+    บันทึกเรียบร้อย
+  </div>
+
+  <script>
+    // ==================== INITIAL DATA & STATE ====================
+    // status: 'พร้อมใช้' (in wardrobe) | 'ใส่แล้ว' (in worn basket)
+    const DEFAULT_WARDROBE = [
+      {
+        id: 'item-1',
+        name: 'เสื้อเชิ้ตลินินสีชมพูตุ่น',
+        category: 'เสื้อ',
+        color: 'ชมพูตุ่น',
+        status: 'พร้อมใช้',
+        wornCount: 4,
+        image: 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=500&q=80'
+      },
+      {
+        id: 'item-2',
+        name: 'เสื้อยืดมินิมอลสีครีมนวล',
+        category: 'เสื้อ',
+        color: 'ครีมนวล',
+        status: 'พร้อมใช้',
+        wornCount: 7,
+        image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=500&q=80'
+      },
+      {
+        id: 'item-3',
+        name: 'กางเกงทรงกระบอกสีเบจ',
+        category: 'กางเกง',
+        color: 'เบจ',
+        status: 'พร้อมใช้',
+        wornCount: 5,
+        image: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=500&q=80'
+      },
+      {
+        id: 'item-4',
+        name: 'กระโปรงยาวพลิ้วสีขาวนวล',
+        category: 'กระโปรง/เดรส',
+        color: 'ขาวนวล',
+        status: 'พร้อมใช้',
+        wornCount: 3,
+        image: 'https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?auto=format&fit=crop&w=500&q=80'
+      },
+      {
+        id: 'item-5',
+        name: 'คาร์ดิแกนไหมพรมสีน้ำตาลหม่น',
+        category: 'เสื้อคลุม',
+        color: 'น้ำตาลหม่น',
+        status: 'พร้อมใช้',
+        wornCount: 2,
+        image: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=500&q=80'
+      },
+      {
+        id: 'item-6',
+        name: 'รองเท้าผ้าใบสีขาวคลีน',
+        category: 'รองเท้า',
+        color: 'ขาว',
+        status: 'พร้อมใช้',
+        wornCount: 9,
+        image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=500&q=80'
+      },
+      {
+        id: 'item-7',
+        name: 'หมวกบักเก็ตผ้าฝ้ายสีครีม',
+        category: 'หมวก',
+        color: 'ครีม',
+        status: 'พร้อมใช้',
+        wornCount: 4,
+        image: 'https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?auto=format&fit=crop&w=500&q=80'
+      },
+      {
+        id: 'item-8',
+        name: 'สร้อยคอจี้มุกมินิมอล',
+        category: 'สร้อยคอ',
+        color: 'เงิน/มุก',
+        status: 'พร้อมใช้',
+        wornCount: 6,
+        image: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=500&q=80'
+      },
+      {
+        id: 'item-9',
+        name: 'ต่างหูห่วงทองเล็กเรียบหรู',
+        category: 'ต่างหู',
+        color: 'โรสโกลด์',
+        status: 'พร้อมใช้',
+        wornCount: 8,
+        image: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=500&q=80'
+      },
+      {
+        id: 'item-10',
+        name: 'กำไลข้อมือเส้นบางสีโรสโกลด์',
+        category: 'กำไล',
+        color: 'โรสโกลด์',
+        status: 'พร้อมใช้',
+        wornCount: 5,
+        image: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&w=500&q=80'
+      }
+    ];
+
+    const CATEGORIES = ['ทั้งหมด', 'เสื้อ', 'กางเกง', 'กระโปรง/เดรส', 'เสื้อคลุม', 'รองเท้า', 'หมวก', 'สร้อยคอ', 'ต่างหู', 'กำไล'];
+
+    const LUCKY_COLORS_BY_DAY = [
+      { day: 'วันอาทิตย์', title: 'สีชมพูตุ่น / ขาวครีม', sub: 'เสริมความสดใสและโชคลาภด้านการงานการเรียน', swatch: '#D5B4B4' },
+      { day: 'วันจันทร์', title: 'สีครีมนวล / น้ำตาลอ่อน', sub: 'เสริมความราบรื่น ผู้ใหญ่เอ็นดู', swatch: '#E4D0D0' },
+      { day: 'วันอังคาร', title: 'สีชมพูกะปิ / โรสเบจ', sub: 'เสริมเสน่ห์และความสำเร็จในการเจรจา', swatch: '#867070' },
+      { day: 'วันพุธ', title: 'สีครีมละมุน / ชมพูอ่อน', sub: 'เสริมความคิดสร้างสรรค์และพลังงานบวก', swatch: '#F5EBEB' },
+      { day: 'วันพฤหัสบดี', title: 'สีน้ำตาลตุ่น / ครีมอ่อน', sub: 'เสริมสติปัญญา สมาธิ และความน่าเชื่อถือ', swatch: '#867070' },
+      { day: 'วันศุกร์', title: 'สีชมพูพาสเทล / ขาวนวล', sub: 'เสริมความสุข ความสบายใจ ตลอดวัน', swatch: '#D5B4B4' },
+      { day: 'วันเสาร์', title: 'สีโรสเบจ / น้ำตาลหม่น', sub: 'เสริมความมั่นคงและคล่องตัว', swatch: '#E4D0D0' }
+    ];
+
+    let wardrobe = JSON.parse(localStorage.getItem('chroma_wardrobe_rose_v1')) || [...DEFAULT_WARDROBE];
+    // Normalize older statuses if any
+    wardrobe = wardrobe.map(item => ({
+      ...item,
+      status: item.status === 'ใส่แล้ว' ? 'ใส่แล้ว' : 'พร้อมใช้'
+    }));
+
+    let currentCategory = 'ทั้งหมด';
+    let currentTodayLook = null;
+    let stylistSelectedOccasion = 'ไปเรียน / ทำงาน';
+    let stylistSelectedStyle = 'มินิมอลคลีนๆ';
+    let lastStylistLook = null;
+    let uploadedBase64 = '';
+    let totalWornSessions = Number(localStorage.getItem('chroma_total_worn_sessions') || 12);
+
+    // ==================== INITIALIZATION ====================
+    document.addEventListener('DOMContentLoaded', () => {
+      updateDateAndLuckyColor();
+      fetchRealtimeWeather();
+      syncAllViews();
+      generateTodayLook();
+      const savedEmail = localStorage.getItem('chroma_user_email');
+      if (savedEmail) {
+        document.getElementById('profile-email').textContent = `ซิงก์ข้อมูลกับ: ${savedEmail}`;
+        document.getElementById('sync-email-input').value = savedEmail;
+      }
+      lucide.createIcons();
+    });
+
+    function saveAndRefresh() {
+      localStorage.setItem('chroma_wardrobe_rose_v1', JSON.stringify(wardrobe));
+      syncAllViews();
+    }
+
+    function syncAllViews() {
+      renderWardrobe();
+      renderWornBasket();
+      updateBadgesAndStats();
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.remove('hidden');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => toast.classList.add('hidden'), 2800);
+    }
+
+    // ==================== NAVIGATION ====================
+    function switchTab(tabName) {
+      ['today', 'stylist', 'wardrobe', 'basket', 'profile'].forEach(t => {
+        document.getElementById(`view-${t}`).classList.add('hidden');
+
+        // Desktop nav
+        const dBtn = document.getElementById(`tab-${t}`);
+        if (dBtn) {
+          dBtn.classList.remove('bg-[#867070]', 'text-white', 'shadow-sm');
+          dBtn.classList.add('text-[#867070]');
+        }
+
+        // Mobile nav
+        const mBtn = document.getElementById(`m-tab-${t}`);
+        if (mBtn) {
+          mBtn.classList.remove('bg-[#867070]', 'text-white');
+          mBtn.classList.add('text-[#867070]');
+        }
+      });
+
+      document.getElementById(`view-${tabName}`).classList.remove('hidden');
+
+      const activeDBtn = document.getElementById(`tab-${tabName}`);
+      if (activeDBtn) {
+        activeDBtn.classList.add('bg-[#867070]', 'text-white', 'shadow-sm');
+        activeDBtn.classList.remove('text-[#867070]');
+      }
+
+      const activeMBtn = document.getElementById(`m-tab-${tabName}`);
+      if (activeMBtn) {
+        activeMBtn.classList.add('bg-[#867070]', 'text-white');
+        activeMBtn.classList.remove('text-[#867070]');
+      }
+
+      lucide.createIcons();
+    }
+
+    // ==================== REAL-TIME DATE, LUCKY COLOR & WEATHER ====================
+    function updateDateAndLuckyColor() {
+      const now = new Date();
+      const thaiDays = ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'];
+      const thaiMonths = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+      const dayIdx = now.getDay();
+      const dateText = `วัน${thaiDays[dayIdx]}ที่ ${now.getDate()} ${thaiMonths[now.getMonth()]}`;
+      document.getElementById('today-date-badge').textContent = dateText;
+
+      const lucky = LUCKY_COLORS_BY_DAY[dayIdx];
+      document.getElementById('lucky-day-name').textContent = lucky.day;
+      document.getElementById('lucky-color-title').textContent = lucky.title;
+      document.getElementById('lucky-color-sub').textContent = lucky.sub;
+      document.getElementById('lucky-swatch').style.background = lucky.swatch;
+    }
+
+    async function fetchRealtimeWeather() {
+      try {
+        const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=13.7563&longitude=100.5018&current_weather=true');
+        const data = await res.json();
+        if (data && data.current_weather) {
+          const temp = Math.round(data.current_weather.temperature);
+          const code = data.current_weather.weathercode;
+          let desc = 'ท้องฟ้าโปร่ง';
+          let tip = 'อากาศกำลังดี แนะนำเสื้อผ้าโทนสีอ่อนระบายอากาศง่าย คู่กับหมวกและเครื่องประดับมินิมอล';
+          if (code >= 51 && code <= 67) {
+            desc = 'มีฝนตกปรอยๆ';
+            tip = 'มีโอกาสเจอฝน แนะนำพกเสื้อคลุมและเลือกรองเท้าที่เดินสะดวก';
+          } else if (code >= 1 && code <= 3) {
+            desc = 'มีเมฆบางส่วน';
+            tip = 'แสงนุ่มถ่ายรูปสวย เหมาะกับชุดโทนชมพูตุ่น-ครีมแมตช์กับสร้อยคอและต่างหูเล็กๆ';
+          }
+          document.getElementById('nav-temp').textContent = `${temp}°C`;
+          document.getElementById('weather-temp').textContent = `${temp}°C`;
+          document.getElementById('weather-desc').textContent = desc;
+          document.getElementById('weather-tip').textContent = `Style Tip: ${tip}`;
+        }
+      } catch (e) {
+        // Fallback keeps default 29°C cleanly
+      }
+    }
+
+    // ==================== CORE WORKFLOW: WEAR & WASH (สวมใส่ -> ตะกร้าใส่แล้ว -> ซักแล้ว) ====================
+    function moveItemsToWornBasket(items, sourceLabel = 'ชุดที่เลือก') {
+      const validIds = [...new Set(items.filter(Boolean).map(i => i.id))];
+      if (validIds.length === 0) {
+        showToast('ไม่พบรายการที่พร้อมใช้สำหรับสวมใส่');
+        return;
+      }
+
+      let movedCount = 0;
+      validIds.forEach(id => {
+        const found = wardrobe.find(w => w.id === id);
+        if (found && found.status === 'พร้อมใช้') {
+          found.status = 'ใส่แล้ว';
+          found.wornCount = (found.wornCount || 0) + 1;
+          found.wornDate = new Date().toLocaleDateString('th-TH', { day: 'numeric', month: 'short' });
+          movedCount++;
+        }
+      });
+
+      totalWornSessions++;
+      localStorage.setItem('chroma_total_worn_sessions', totalWornSessions);
+      saveAndRefresh();
+      generateTodayLook();
+      showToast(`สวมใส่เรียบร้อย! ย้าย ${movedCount} ชิ้นไปที่ "ตะกร้าใส่แล้ว"`);
+    }
+
+    function wearSingleItem(id) {
+      const item = wardrobe.find(w => w.id === id);
+      if (!item) return;
+      moveItemsToWornBasket([item], item.name);
+    }
+
+    function washSingleItem(id) {
+      const item = wardrobe.find(w => w.id === id);
+      if (!item) return;
+      item.status = 'พร้อมใช้';
+      delete item.wornDate;
+      saveAndRefresh();
+      // Refresh today look if previously empty
+      if (!currentTodayLook || !currentTodayLook.top) {
+        generateTodayLook();
+      }
+      showToast(`ซัก "${item.name}" เสร็จแล้ว! ย้ายกลับเข้าตู้เสื้อผ้า (พร้อมใช้)`);
+    }
+
+    function washAllItems() {
+      const wornItems = wardrobe.filter(w => w.status === 'ใส่แล้ว');
+      if (wornItems.length === 0) {
+        showToast('ไม่มีเสื้อผ้าในตะกร้าใส่แล้ว');
+        return;
+      }
+      wornItems.forEach(item => {
+        item.status = 'พร้อมใช้';
+        delete item.wornDate;
+      });
+      saveAndRefresh();
+      generateTodayLook();
+      showToast(`ซักแล้วทั้งหมด ${wornItems.length} ชิ้น ย้ายกลับเข้าตู้เสื้อผ้าเรียบร้อย!`);
+    }
+
+    // ==================== OUTFIT GENERATION (ONLY FROM 'พร้อมใช้' ITEMS) ====================
+    function pickRandom(arr) {
+      if (!arr || arr.length === 0) return null;
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function buildOutfitFromReadyWardrobe(customNote = '') {
+      const readyItems = wardrobe.filter(i => i.status === 'พร้อมใช้');
+      if (readyItems.length === 0) return null;
+
+      const tops = readyItems.filter(i => i.category === 'เสื้อ');
+      const bottoms = readyItems.filter(i => i.category === 'กางเกง' || i.category === 'กระโปรง/เดรส');
+      const shoes = readyItems.filter(i => i.category === 'รองเท้า');
+      const accessories = readyItems.filter(i => ['หมวก', 'สร้อยคอ', 'ต่างหู', 'กำไล'].includes(i.category));
+
+      const top = pickRandom(tops) || readyItems[0];
+      const bottom = pickRandom(bottoms) || readyItems.find(i => i.id !== top?.id) || top;
+      const shoe = pickRandom(shoes) || readyItems.find(i => i.id !== top?.id && i.id !== bottom?.id) || top;
+
+      const shuffledAcc = [...accessories].sort(() => 0.5 - Math.random());
+      const pickedAcc = [];
+      const seenCats = new Set();
+      for (const acc of shuffledAcc) {
+        if (!seenCats.has(acc.category) && pickedAcc.length < 3) {
+          pickedAcc.push(acc);
+          seenCats.add(acc.category);
+        }
+      }
+
+      return {
+        top,
+        bottom,
+        shoe,
+        accessories: pickedAcc,
+        title: customNote ? 'AI Custom Look' : 'Rose Taupe Minimal',
+        desc: customNote
+          ? `จัดชุดจากของที่พร้อมใช้ตามคำขอ "${customNote}" จับคู่ ${top?.name || ''} กับ ${bottom?.name || ''}`
+          : `แมตช์ ${top?.name || 'เสื้อพร้อมใช้'} คู่กับ ${bottom?.name || 'ท่อนล่าง'} เสริมลุคด้วยเครื่องประดับโทนละมุน`
+      };
+    }
+
+    function renderTodayLookCard(look, occasionText = 'คาเฟ่ / ชิลล์') {
+      const container = document.getElementById('today-outfit-content');
+      if (!look || !look.top) {
+        currentTodayLook = null;
+        container.innerHTML = `
+          <div class="col-span-full py-10 text-center space-y-3 bg-[#F5EBEB] rounded-2xl p-6">
+            <p class="text-lg font-bold text-[#382b2b]">เสื้อผ้าในตู้ถูกนำไปสวมใส่หมดแล้ว!</p>
+            <p class="text-sm text-[#867070]">ไปที่ "ตะกร้าใส่แล้ว" เพื่อกดปุ่มซักแล้ว หรือเพิ่มเสื้อผ้าใหม่เข้าตู้</p>
+            <button onclick="switchTab('basket')" class="px-5 py-2 rounded-2xl font-bold text-white text-base" style="background:#867070;">
+              ไปที่ตะกร้าใส่แล้ว
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      // Restore grid structure if it was replaced by empty state
+      if (!document.getElementById('today-top-img')) {
+        location.reload();
+        return;
+      }
+
+      currentTodayLook = look;
+
+      document.getElementById('today-top-img').src = look.top.image;
+      document.getElementById('today-top-name').textContent = look.top.name;
+
+      document.getElementById('today-bottom-img').src = look.bottom.image;
+      document.getElementById('today-bottom-name').textContent = look.bottom.name;
+
+      document.getElementById('today-shoe-img').src = look.shoe.image;
+      document.getElementById('today-shoe-name').textContent = look.shoe.name;
+
+      document.getElementById('today-occasion-tag').textContent = occasionText;
+      document.getElementById('today-look-title').textContent = look.title;
+      document.getElementById('today-look-desc').textContent = look.desc;
+
+      const accListEl = document.getElementById('today-accessories-list');
+      if (look.accessories && look.accessories.length > 0) {
+        accListEl.innerHTML = look.accessories.map(acc => `
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-xl bg-white text-sm font-bold text-[#382b2b] border border-[#867070]/15">
+            <img src="${acc.image}" class="w-4 h-4 rounded-full object-cover" />
+            <span>${acc.category}: ${acc.name}</span>
+          </span>
+        `).join('');
+      } else {
+        accListEl.innerHTML = `<span class="text-sm text-[#867070]">ไม่มีเครื่องประดับสถานะพร้อมใช้ในตู้</span>`;
+      }
+    }
+
+    function generateTodayLook() {
+      const look = buildOutfitFromReadyWardrobe();
+      renderTodayLookCard(look);
+    }
+
+    function runQuickPrompt() {
+      const input = document.getElementById('quick-ai-input').value.trim();
+      const look = buildOutfitFromReadyWardrobe(input);
+      renderTodayLookCard(look, input || 'ตามคำขอ AI');
+      showToast('AI จัดลุคจากเสื้อผ้าที่พร้อมใช้ให้เรียบร้อย!');
+    }
+
+    function matchLuckyColorLook() {
+      const luckyTitle = document.getElementById('lucky-color-title').textContent;
+      const look = buildOutfitFromReadyWardrobe(`เน้นโทนสีมงคล ${luckyTitle}`);
+      renderTodayLookCard(look, 'ลุคสีมงคล');
+      showToast(`จัดชุดเสริมดวงด้วย ${luckyTitle} แล้ว!`);
+    }
+
+    function quickOccasion(occasion) {
+      const look = buildOutfitFromReadyWardrobe(`แต่งตัวไป${occasion}`);
+      renderTodayLookCard(look, occasion);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      showToast(`จัดลุคสำหรับ "${occasion}" เรียบร้อย`);
+    }
+
+    function wearTodayLook() {
+      if (!currentTodayLook) return;
+      const itemsToWear = [
+        currentTodayLook.top,
+        currentTodayLook.bottom,
+        currentTodayLook.shoe,
+        ...(currentTodayLook.accessories || [])
+      ];
+      moveItemsToWornBasket(itemsToWear, currentTodayLook.title);
+    }
+
+    // ==================== AI STYLIST TAB ====================
+    function selectStylistOption(type, value, btn) {
+      if (type === 'occasion') {
+        stylistSelectedOccasion = value;
+        document.querySelectorAll('.stylist-occ-btn').forEach(b => {
+          b.classList.remove('bg-[#D5B4B4]');
+          b.classList.add('bg-white');
+        });
+        btn.classList.remove('bg-white');
+        btn.classList.add('bg-[#D5B4B4]');
+      } else {
+        stylistSelectedStyle = value;
+        document.querySelectorAll('.stylist-sty-btn').forEach(b => {
+          b.classList.remove('bg-[#E4D0D0]');
+          b.classList.add('bg-white');
+        });
+        btn.classList.remove('bg-white');
+        btn.classList.add('bg-[#E4D0D0]');
+      }
+    }
+
+    function fillPromptPreset(text) {
+      document.getElementById('stylist-custom-prompt').value = text;
+    }
+
+    function generateStylistResult() {
+      const customNote = document.getElementById('stylist-custom-prompt').value.trim();
+      const look = buildOutfitFromReadyWardrobe(customNote);
+      if (!look) {
+        showToast('ไม่มีเสื้อผ้าสถานะพร้อมใช้ในตู้ กรุณากดซักแล้วในตะกร้าก่อนครับ');
+        return;
+      }
+      lastStylistLook = look;
+
+      document.getElementById('stylist-result-box').classList.remove('hidden');
+      document.getElementById('stylist-res-tag').textContent = `${stylistSelectedOccasion} • ${stylistSelectedStyle}`;
+
+      const accNames = look.accessories.map(a => `${a.name} (${a.category})`).join(', ');
+      document.getElementById('stylist-ai-analysis').textContent =
+        `สำหรับโอกาส "${stylistSelectedOccasion}" ในสไตล์ "${stylistSelectedStyle}" ${customNote ? `(โจทย์เพิ่มเติม: ${customNote}) ` : ''}AI คัดเลือกชุดที่พร้อมใช้ในตู้ ได้แก่ "${look.top.name}" คู่กับ "${look.bottom.name}" และรองเท้า "${look.shoe.name}" พร้อมแมตช์เครื่องประดับ: ${accNames || 'สไตล์เรียบง่าย'} ครับ`;
+
+      const uniqueMatched = [];
+      const seenIds = new Set();
+      [look.top, look.bottom, look.shoe, ...look.accessories].filter(Boolean).forEach(item => {
+        if (!seenIds.has(item.id)) {
+          uniqueMatched.push(item);
+          seenIds.add(item.id);
+        }
+      });
+
+      document.getElementById('stylist-items-grid').innerHTML = uniqueMatched.map(item => `
+        <div class="bg-white rounded-2xl p-2.5 border border-[#867070]/15 text-center space-y-1.5">
+          <img src="${item.image}" class="w-full h-28 object-cover rounded-xl" />
+          <div class="flex items-center justify-center gap-1">
+            <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-[#F5EBEB] text-[#382b2b]">${item.category}</span>
+            <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-[#E4D0D0] text-[#382b2b]">พร้อมใช้</span>
+          </div>
+          <p class="text-sm font-bold text-[#382b2b] truncate">${item.name}</p>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    function applyStylistToToday() {
+      if (!lastStylistLook) return;
+      renderTodayLookCard(lastStylistLook, `${stylistSelectedOccasion} • ${stylistSelectedStyle}`);
+      switchTab('today');
+      showToast('นำลุคจาก AI Stylist มาตั้งเป็นชุดแนะนำวันนี้แล้ว');
+    }
+
+    function wearStylistLook() {
+      if (!lastStylistLook) return;
+      const itemsToWear = [
+        lastStylistLook.top,
+        lastStylistLook.bottom,
+        lastStylistLook.shoe,
+        ...(lastStylistLook.accessories || [])
+      ];
+      moveItemsToWornBasket(itemsToWear, 'ลุคจาก AI Stylist');
+      document.getElementById('stylist-result-box').classList.add('hidden');
+      switchTab('basket');
+    }
+
+    // ==================== TAB 3: WARDROBE (เฉพาะสถานะ "พร้อมใช้") ====================
+    function renderWardrobe() {
+      const readyItems = wardrobe.filter(i => i.status === 'พร้อมใช้');
+
+      const filterContainer = document.getElementById('category-filters');
+      filterContainer.innerHTML = CATEGORIES.map(cat => {
+        const count = cat === 'ทั้งหมด' ? readyItems.length : readyItems.filter(i => i.category === cat).length;
+        const isActive = currentCategory === cat;
+        return `
+          <button onclick="setWardrobeCategory('${cat}')" class="pill-btn shrink-0 px-3.5 py-1 rounded-full text-sm sm:text-base font-bold border border-[#867070]/20 ${isActive ? 'bg-[#867070] text-white' : 'bg-white/95 text-[#382b2b] hover:bg-[#F5EBEB]'}">
+            ${cat} <span class="opacity-80 ml-0.5">${count}</span>
+          </button>
+        `;
+      }).join('');
+
+      const filtered = currentCategory === 'ทั้งหมด'
+        ? readyItems
+        : readyItems.filter(i => i.category === currentCategory);
+
+      document.getElementById('wardrobe-summary-text').textContent =
+        `เสื้อผ้าและเครื่องประดับที่ "พร้อมใช้" ทั้งหมด ${readyItems.length} ชิ้น • กด "สวมใส่" เพื่อย้ายไปตะกร้าใส่แล้ว`;
+
+      const grid = document.getElementById('wardrobe-grid');
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full py-12 text-center space-y-2.5">
+            <p class="text-[#382b2b] font-bold text-lg">ไม่มีรายการสถานะ "พร้อมใช้" ในหมวด "${currentCategory}"</p>
+            <p class="text-sm text-[#867070]">รายการอาจอยู่ใน "ตะกร้าใส่แล้ว" หรือคุณสามารถเพิ่มรายการใหม่ได้</p>
+            <div class="flex justify-center gap-2 pt-1">
+              <button onclick="switchTab('basket')" class="px-4 py-1.5 rounded-xl text-base font-bold bg-white border border-[#867070]/25 text-[#382b2b]">ดูตะกร้าใส่แล้ว</button>
+              <button onclick="openScanModal()" class="px-4 py-1.5 rounded-xl text-base font-bold text-white" style="background:#867070;">+ เพิ่มรายการใหม่</button>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = filtered.map(item => `
+        <div class="relative bg-white/95 rounded-3xl p-3 border border-[#867070]/20 shadow-sm flex flex-col justify-between">
+          <!-- PROMINENT RED DELETE BUTTON -->
+          <button
+            type="button"
+            onclick="deleteWardrobeItem('${item.id}')"
+            title="ลบรายการนี้ออกจากตู้"
+            class="absolute top-3.5 right-3.5 z-20 px-2.5 py-0.5 rounded-full bg-rose-600 hover:bg-rose-700 active:scale-95 text-white text-xs sm:text-sm font-bold shadow-md flex items-center gap-1 transition"
+          >
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            <span>ลบ</span>
+          </button>
+
+          <!-- Arch Image Container -->
+          <div class="arch-frame relative aspect-[4/5] mb-2.5">
+            <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover" />
+            <!-- Status Badge: พร้อมใช้ -->
+            <span class="absolute bottom-2.5 left-2.5 px-2.5 py-0.5 rounded-full text-xs font-bold border border-[#867070]/20 shadow-sm bg-[#E4D0D0] text-[#382b2b] flex items-center gap-1">
+              <span class="w-2 h-2 rounded-full bg-emerald-600 inline-block"></span>
+              พร้อมใช้
+            </span>
+          </div>
+
+          <!-- Details & Action Button -->
+          <div class="space-y-2">
+            <div>
+              <div class="flex items-center justify-between gap-1">
+                <span class="text-xs font-bold px-2 py-0.5 rounded-md bg-[#F5EBEB] text-[#867070]">${item.category}</span>
+                <span class="text-xs text-[#867070]">ใส่แล้ว ${item.wornCount || 0} ครั้ง</span>
+              </div>
+              <h3 class="font-bold text-base text-[#382b2b] mt-1 truncate">${item.name}</h3>
+              <p class="text-xs text-[#867070]">โทนสี: ${item.color || '-'}</p>
+            </div>
+
+            <!-- PROMINENT WEAR BUTTON (ปุ่มสวมใส่) -->
+            <button
+              type="button"
+              onclick="wearSingleItem('${item.id}')"
+              class="pill-btn w-full py-1.5 px-3 rounded-xl font-bold text-sm sm:text-base text-white flex items-center justify-center gap-1.5 shadow-sm hover:opacity-95"
+              style="background:#867070;"
+            >
+              <i data-lucide="check-circle" class="w-4 h-4"></i>
+              <span>สวมใส่</span>
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    function setWardrobeCategory(cat) {
+      currentCategory = cat;
+      renderWardrobe();
+    }
+
+    function deleteWardrobeItem(id) {
+      const target = wardrobe.find(i => i.id === id);
+      if (!target) return;
+      wardrobe = wardrobe.filter(i => i.id !== id);
+      saveAndRefresh();
+      generateTodayLook();
+      showToast(`ลบ "${target.name}" ออกจากระบบเรียบร้อยแล้ว`);
+    }
+
+    // ==================== TAB 4: WORN BASKET (ตะกร้าใส่แล้ว & ปุ่มซักแล้ว) ====================
+    function renderWornBasket() {
+      const wornItems = wardrobe.filter(i => i.status === 'ใส่แล้ว');
+      const grid = document.getElementById('basket-grid');
+      const washAllBtn = document.getElementById('wash-all-btn');
+
+      document.getElementById('basket-summary-text').textContent =
+        `มีเสื้อผ้าและเครื่องประดับในตะกร้าใส่แล้ว ${wornItems.length} ชิ้น • กด "ซักแล้ว" เพื่อย้ายกลับไปยังตู้เสื้อผ้าพร้อมใช้`;
+
+      if (wornItems.length === 0) {
+        washAllBtn.classList.add('opacity-50', 'pointer-events-none');
+        grid.innerHTML = `
+          <div class="col-span-full py-14 text-center space-y-2.5">
+            <div class="w-14 h-14 rounded-full mx-auto flex items-center justify-center bg-[#F5EBEB] text-[#867070]">
+              <i data-lucide="sparkles" class="w-7 h-7"></i>
+            </div>
+            <p class="text-xl font-bold text-[#382b2b]">ตะกร้าใส่แล้วว่างอยู่</p>
+            <p class="text-sm text-[#867070]">เสื้อผ้าทุกชิ้นสะอาดและพร้อมใช้งานอยู่ในตู้เสื้อผ้าของคุณ</p>
+            <button onclick="switchTab('wardrobe')" class="mt-2 px-5 py-2 rounded-2xl text-base font-bold text-white" style="background:#867070;">
+              กลับไปที่ตู้เสื้อผ้า
+            </button>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      washAllBtn.classList.remove('opacity-50', 'pointer-events-none');
+
+      grid.innerHTML = wornItems.map(item => `
+        <div class="relative bg-[#F5EBEB]/90 rounded-3xl p-3 border border-[#867070]/25 shadow-sm flex flex-col justify-between">
+          <!-- Arch Image Container -->
+          <div class="arch-frame relative aspect-[4/5] mb-2.5">
+            <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover opacity-90" />
+            <span class="absolute bottom-2.5 left-2.5 px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#867070] text-white shadow-sm">
+              ใส่แล้ว ${item.wornDate ? `(${item.wornDate})` : ''}
+            </span>
+          </div>
+
+          <!-- Details & WASHED BUTTON (ปุ่มซักแล้ว) -->
+          <div class="space-y-2">
+            <div>
+              <span class="text-xs font-bold px-2 py-0.5 rounded-md bg-white text-[#867070]">${item.category}</span>
+              <h3 class="font-bold text-base text-[#382b2b] mt-1 truncate">${item.name}</h3>
+            </div>
+
+            <button
+              type="button"
+              onclick="washSingleItem('${item.id}')"
+              class="pill-btn w-full py-1.5 px-3 rounded-xl font-bold text-sm sm:text-base text-[#382b2b] border border-[#867070]/25 flex items-center justify-center gap-1.5 shadow-sm hover:opacity-95"
+              style="background:#D5B4B4;"
+            >
+              <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+              <span>ซักแล้ว (คืนเข้าตู้)</span>
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    // ==================== BADGES & STATS ====================
+    function updateBadgesAndStats() {
+      const readyCount = wardrobe.filter(i => i.status === 'พร้อมใช้').length;
+      const basketCount = wardrobe.filter(i => i.status === 'ใส่แล้ว').length;
+
+      document.getElementById('nav-basket-badge').textContent = basketCount;
+      document.getElementById('m-basket-badge').textContent = basketCount;
+      document.getElementById('today-basket-count').textContent = basketCount;
+      document.getElementById('wardrobe-basket-count').textContent = basketCount;
+
+      document.getElementById('stat-ready-items').textContent = readyCount;
+      document.getElementById('stat-basket-items').textContent = basketCount;
+      document.getElementById('stat-worn-count').textContent = totalWornSessions;
+    }
+
+    // ==================== PHOTO UPLOAD & ADD ITEM MODAL ====================
+    function openScanModal() {
+      uploadedBase64 = '';
+      document.getElementById('upload-preview-img').classList.add('hidden');
+      document.getElementById('upload-placeholder').classList.remove('hidden');
+      document.getElementById('new-item-name').value = '';
+      document.getElementById('new-item-color').value = '';
+      const modal = document.getElementById('scan-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      lucide.createIcons();
+    }
+
+    function closeScanModal() {
+      const modal = document.getElementById('scan-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function handleImageUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const maxW = 500;
+          const scale = Math.min(1, maxW / img.width);
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          uploadedBase64 = canvas.toDataURL('image/jpeg', 0.8);
+          const preview = document.getElementById('upload-preview-img');
+          preview.src = uploadedBase64;
+          preview.classList.remove('hidden');
+          document.getElementById('upload-placeholder').classList.add('hidden');
+
+          const nameInput = document.getElementById('new-item-name');
+          if (!nameInput.value) {
+            const cleanName = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+            nameInput.value = cleanName.length > 2 ? cleanName : 'ไอเทมใหม่จากอัลบั้ม';
+          }
+          showToast('โหลดรูปจากอัลบั้มสำเร็จ!');
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function saveNewWardrobeItem() {
+      const name = document.getElementById('new-item-name').value.trim();
+      const category = document.getElementById('new-item-category').value;
+      const color = document.getElementById('new-item-color').value.trim() || 'ชมพูตุ่น';
+
+      if (!name) {
+        showToast('กรุณาตั้งชื่อเสื้อผ้าหรือเครื่องประดับก่อนบันทึก');
+        return;
+      }
+
+      const fallbackImg = 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=500&q=80';
+      const newItem = {
+        id: 'item-' + Date.now(),
+        name,
+        category,
+        color,
+        status: 'พร้อมใช้',
+        wornCount: 0,
+        image: uploadedBase64 || fallbackImg
+      };
+
+      wardrobe.unshift(newItem);
+      saveAndRefresh();
+      closeScanModal();
+      switchTab('wardrobe');
+      showToast(`เพิ่ม "${name}" (${category}) สถานะ "พร้อมใช้" เข้าตู้เรียบร้อย!`);
+    }
+
+    // ==================== PROFILE ====================
+    function saveUserEmail() {
+      const email = document.getElementById('sync-email-input').value.trim();
+      if (!email || !email.includes('@')) {
+        showToast('กรุณากรอกอีเมลให้ถูกต้อง');
+        return;
+      }
+      localStorage.setItem('chroma_user_email', email);
+      document.getElementById('profile-email').textContent = `ซิงก์ข้อมูลกับ: ${email}`;
+      showToast('เชื่อมต่ออีเมลเรียบร้อยแล้ว');
+    }
+
+    function resetDemoWardrobe() {
+      wardrobe = [...DEFAULT_WARDROBE];
+      saveAndRefresh();
+      generateTodayLook();
+      showToast('คืนค่าตัวอย่างตู้เสื้อผ้าเรียบร้อย');
+    }
+  </script>
+</body>
+</html>
