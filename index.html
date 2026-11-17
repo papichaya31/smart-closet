@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CHROMA — AI Outfit Planner</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --c-taupe: #867070;
+      --c-rose: #D5B4B4;
+      --c-blush: #E4D0D0;
+      --c-cream: #F5EBEB;
+      --c-ink: #3a2e2e;
+    }
+
+    * {
+      font-family: 'TH Sarabun New', 'TH Sarabun PSK', 'Sarabun', sans-serif;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 18px;
+    }
+
+    body {
+      color: var(--c-ink);
+      background:
+        radial-gradient(circle at 12% 18%, rgba(134, 112, 112, 0.22) 0%, transparent 45%),
+        radial-gradient(circle at 85% 15%, rgba(213, 180, 180, 0.48) 0%, transparent 45%),
+        radial-gradient(circle at 75% 82%, rgba(228, 208, 208, 0.6) 0%, transparent 48%),
+        radial-gradient(circle at 18% 85%, rgba(245, 235, 235, 0.95) 0%, transparent 50%),
+        #F5EBEB;
+      min-height: 100vh;
+    }
+
+    .minimal-card {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(12px);
+      border: 1.5px solid rgba(134, 112, 112, 0.22);
+      box-shadow: 0 10px 28px -10px rgba(134, 112, 112, 0.14);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .minimal-card:hover {
+      box-shadow: 0 14
